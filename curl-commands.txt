@@ -1,0 +1,2 @@
+curl -X post http://localhost:8000/api-token-auth/ -d "username=admin&password=admin123"
+curl http://localhost:8000/user/ -H 'Authorization: Token 2f5eebd78d69a3c33cb5d83d54068153a897e4cf' -H "Content-Type: application/json"
