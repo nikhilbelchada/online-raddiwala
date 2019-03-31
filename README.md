@@ -2,7 +2,7 @@
 
 Simple CRUD app to book and manage scrap service online built using Django, Rest Framework
 
-Web App can be found [HERE](https://github.com/facebook/create-react-app). Build using ReactJS
+Web App can be found [HERE](https://github.com/nikhilbelchada/online-raddiwala-web-react.git). Build using ReactJS
 
 ## Instruction
 
