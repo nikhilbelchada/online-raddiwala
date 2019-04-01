@@ -10,12 +10,13 @@ from rest_framework.exceptions import (
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'phone', 'address', 'first_name', 'last_name', 'email')
-        read_only_fields = ('username', )
+        fields = ('username', 'phone', 'address', 'first_name', 'last_name', 'email', 'password')
         extra_kwargs = {
+            'username': {'required': True},
             'phone': {'required': True},
             'address': {'required': True},
-            'email': {'required': True}
+            'email': {'required': True},
+            'password': {'required': False},
         }
 
 

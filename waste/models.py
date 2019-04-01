@@ -8,7 +8,7 @@ from waste_category.models import WasteCategory
 
 class Waste(models.Model):
     waste_category = models.ForeignKey(WasteCategory, related_name="waste_category")
-    name = models.CharField(max_length=50, blank=False)
+    name = models.CharField(max_length=50, blank=False, unique=True)
     unit = models.CharField(max_length=50, blank=False)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
