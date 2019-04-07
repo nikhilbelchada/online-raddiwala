@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import csv
+
+from django.http import HttpResponse
+from django.utils import timezone
+from dateutil import parser
+
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, list_route
 from rest_framework import status
+
 
 from .serializers import (
     OrderSerializer,
@@ -28,14 +35,47 @@ class OrderViewSet(mixins.CreateModelMixin,
     serializer_class = OrderSerializer
     permission_classes = (IsAuthenticated, )
 
+    csv_fields = ['username', 'status', 'amount_paid', 'order_date', 'pickup_date', 'feedback']
+
     def get_queryset(self):
         user = self.request.user
+        params = self.request.query_params
         filters = {}
 
         if not user.is_admin:
             filters.update({'user_id': user.id})
 
+        if params.get('status'):
+            filters.update({'status': params.get('status')})
+
         return Order.objects.filter(**filters).order_by('-updated_at')
+
+    @list_route(methods=['get'], url_path='download-report')
+    def download_report(self, request):
+        data = self.get_queryset()
+        serializer = self.get_serializer(data, many=True)
+        date_format = "%d-%m-%Y %H:%M:%S"
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="export.csv"'
+
+        writer = csv.DictWriter(response, fieldnames=self.csv_fields)
+        writer.writeheader()
+
+        for row in serializer.data:
+            data = {}
+
+            for field in self.csv_fields:
+                if 'date' in field:
+                    data[field] = timezone.datetime.strftime(parser.parse(row[field]), date_format)
+                else:
+                    data[field] = row[field]
+
+            writer.writerow(data)
+
+
+        return response
+
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

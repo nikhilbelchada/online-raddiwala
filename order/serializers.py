@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from rest_framework import serializers
 from .models import (
     STATUS_COMPLETE,
@@ -49,9 +51,9 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         if instance.status == STATUS_COMPLETE:
-            raise serializers.ValidationError("Cannot updated completed order")
+            raise serializers.ValidationError("Cannot update completed order")
         if instance.status == STATUS_CANCELLED:
-            raise serializers.ValidationError("Cannot updated cancelled order")
+            raise serializers.ValidationError("Cannot update cancelled order")
 
         order_items = validated_data.pop('order_items')
 
@@ -82,6 +84,16 @@ class OrderSerializer(serializers.ModelSerializer):
 
         if self.instance and not value:
             value = self.instance.pickup_date
+
+        if not self.instance and value < timezone.now():
+            raise serializers.ValidationError("Pickup date must be future date")
+
+        if (
+            self.instance and
+            self.instance.status not in [STATUS_COMPLETE, STATUS_CANCELLED] and
+            value < timezone.now()
+        ):
+            raise serializers.ValidationError("Pickup date must be future date")
 
         return value
 

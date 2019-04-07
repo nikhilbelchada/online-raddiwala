@@ -11,7 +11,7 @@ class User(AbstractUser):
 
     def user_details(self):
         return {
-            'user_id': self.pk,
+            'id': self.pk,
             'username': self.username,
             'email': self.email or "",
             'first_name': self.first_name or "",
