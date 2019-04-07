@@ -1,4 +1,5 @@
 backports.shutil-get-terminal-size==1.0.0
+dateutils==0.6.6
 decorator==4.4.0
 Django==1.11.20
 django-cors-headers==2.5.2
@@ -14,6 +15,7 @@ psycopg2==2.7.7
 psycopg2-binary==2.7.7
 ptyprocess==0.6.0
 Pygments==2.3.1
+python-dateutil==2.8.0
 pytz==2018.9
 scandir==1.10.0
 simplegeneric==0.8.1
